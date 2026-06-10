@@ -68,8 +68,14 @@
                     </label>
                     <input type="file" id="csv-file" accept=".csv" style="display:none;" onchange="handleFileUpload(event)">
                     <span style="margin-left: 1rem;" id="file-name-display">Ningún archivo seleccionado.</span>
-                    <br><br>
-                    <button class="btn" onclick="loadSampleDataset()">Cargar Dataset de Ejemplo (Diabetes Pima Binario)</button>
+                    
+                    <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">O selecciona un ejemplo listo para probar:</p>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn" onclick="loadSampleDataset(1)">Ejemplo 1: Diabetes (Salud)</button>
+                            <button class="btn" onclick="loadSampleDataset(2)">Ejemplo 2: Admisiones Universitarias</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="data-config-section" style="display: none; margin-top: 1.5rem;">

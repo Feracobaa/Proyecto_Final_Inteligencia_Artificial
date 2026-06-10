@@ -45,10 +45,12 @@ function handleFileUpload(event) {
     reader.readAsText(file);
 }
 
-// Cargar Dataset de ejemplo embebido (Diabetes Pima Simplificado)
-function loadSampleDataset() {
-    document.getElementById('file-name-display').innerText = "Dataset de Ejemplo (Diabetes.csv)";
-    const sampleCSV = `Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigree,Age,Outcome
+// Cargar Dataset de ejemplo embebido
+function loadSampleDataset(id) {
+    let sampleCSV = "";
+    if (id === 1) {
+        document.getElementById('file-name-display').innerText = "Ejemplo 1: Diabetes (Salud)";
+        sampleCSV = `Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigree,Age,Outcome
 6,148,72,35,0,33.6,0.627,50,1
 1,85,66,29,0,26.6,0.351,31,0
 8,183,64,0,0,23.3,0.672,32,1
@@ -62,8 +64,26 @@ function loadSampleDataset() {
 4,110,92,0,0,37.6,0.191,30,0
 10,168,74,0,0,38.0,0.537,34,1
 1,189,60,23,846,30.1,0.398,59,1
-5,166,72,19,175,25.8,0.587,51,1`; 
-    // Muestra pequeña para rápida ejecución interactiva (en la vida real se usaría Fetch para un archivo externo)
+5,166,72,19,175,25.8,0.587,51,1`;
+    } else if (id === 2) {
+        document.getElementById('file-name-display').innerText = "Ejemplo 2: Admisiones Universitarias";
+        sampleCSV = `Examen1,Examen2,NotaPreparatoria,Admitido
+34.6,78.0,3.2,0
+30.2,43.8,2.1,0
+35.8,72.9,3.5,0
+60.1,86.3,4.2,1
+79.0,75.3,4.0,1
+90.2,96.2,4.8,1
+61.1,96.5,4.5,1
+75.0,46.5,3.0,0
+76.0,87.4,4.1,1
+84.4,43.5,3.3,0
+95.8,38.2,3.1,0
+75.0,30.6,2.5,0
+82.3,79.0,4.2,1
+93.1,91.5,4.9,1
+55.3,64.2,3.5,0`;
+    }
     parseCSV(sampleCSV);
 }
 
