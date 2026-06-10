@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regresión Lineal y Clasificación - Simulador Interactivo IA</title>
+    <meta name="description" content="Simulador interactivo educativo para aprender sobre la regresión lineal, clasificación supervisada, entrenamiento y evaluación de modelos.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header / Navigation -->
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon">Σ</div>
+            <h1>Regresión Lineal vs Clasificación</h1>
+        </div>
+        <div class="authors">
+            <span class="author-tag">Camilo Hernandez</span>
+            <span class="author-tag">Fernando Vega</span>
+            <span class="author-tag">Jesus Jimenez</span>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Layout -->
+    <main>
+        
+        <!-- Left Column: Controls & Configurations -->
+        <section class="card control-panel" id="controls-section">
+            
+            <!-- Tabs Navigation -->
+            <nav class="tabs" id="dashboard-tabs">
+                <button class="tab-btn active" id="tab-data-btn" onclick="switchTab('data')">1. Datos</button>
+                <button class="tab-btn" id="tab-train-btn" onclick="switchTab('train')">2. Entrenar</button>
+                <button class="tab-btn" id="tab-classify-btn" onclick="switchTab('classify')">3. Clasificar</button>
+                <button class="tab-btn" id="tab-eval-btn" onclick="switchTab('eval')">4. Evaluar</button>
+            </nav>
+
+            <!-- Tab 1: Data Configuration -->
+            <div class="tab-pane active" id="pane-data">
+                <div>
+                    <h2 class="section-title">Configuración de Datos</h2>
+                    <p class="section-desc">Agrega puntos en el plano cartesiano haciendo clic en el gráfico. Selecciona la clase del punto que deseas agregar:</p>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label-row">
+                        <span>Clase Activa al Hacer Clic</span>
+                    </label>
+                    <div class="class-selector" id="class-toggle-group">
+                        <div class="selector-option class-0-opt active" id="class-0-select" onclick="setActiveClass(0)">
+                            <span class="legend-dot c0"></span> Clase 0 (Rosado)
+                        </div>
+                        <div class="selector-option class-1-opt" id="class-1-select" onclick="setActiveClass(1)">
+                            <span class="legend-dot c1"></span> Clase 1 (Verde)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p>💡 <strong>¿Cómo usar?</strong></p>
+                    <ul class="info-list">
+                        <li>Hacer clic izquierdo en el canvas para agregar un punto.</li>
+                        <li>Hacer clic derecho sobre un punto para cambiar su clase.</li>
+                        <li>Arrastrar un punto existente para reubicarlo.</li>
+                    </ul>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label-row"><span>Generar Conjuntos Predefinidos</span></label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.25rem;">
+                        <button class="btn" id="btn-dataset-separable" onclick="loadDataset('separable')">Separable</button>
+                        <button class="btn" id="btn-dataset-overlap" onclick="loadDataset('overlap')">Traslapado</button>
+                        <button class="btn" id="btn-dataset-outliers" onclick="loadDataset('outliers')">Con Outliers</button>
+                        <button class="btn" id="btn-dataset-random" onclick="loadDataset('random')">Aleatorio</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-danger" id="btn-clear-data" onclick="clearData()">
+                    🗑️ Borrar Todos los Puntos
+                </button>
+            </div>
+
+            <!-- Tab 2: Model Training -->
+            <div class="tab-pane" id="pane-train">
+                <div>
+                    <h2 class="section-title">Entrenamiento del Modelo</h2>
+                    <p class="section-desc">Entrena un modelo supervisado de Regresión Lineal para aprender la relación entre las coordenadas de los puntos y sus etiquetas.</p>
+                </div>
+
+                <div class="info-box">
+                    <p><span class="info-badge regression">Regresión</span> <strong>Hipótesis:</strong> <em>h<sub>θ</sub>(x) = θ<sub>0</sub> + θ<sub>1</sub>x</em> (o <em>y = mx + b</em>), donde el modelo predice la clase como un valor numérico continuo.</p>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label-row"><span>Método de Optimización</span></label>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+                        <button class="btn flex-grow active" id="btn-method-ols" onclick="setTrainMethod('ols')" style="flex:1;">
+                            Mínimos Cuadrados (OLS)
+                        </button>
+                        <button class="btn flex-grow" id="btn-method-gd" onclick="setTrainMethod('gd')" style="flex:1;">
+                            Gradiente Descendiente
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gradient Descent Parameters (Shown when GD selected) -->
+                <div id="gd-params" style="display: none; flex-direction: column; gap: 1rem; border-left: 2px dashed rgba(255,255,255,0.1); padding-left: 1rem; margin-left: 0.25rem;">
+                    <div class="control-group">
+                        <label class="control-label-row">
+                            <span>Tasa de Aprendizaje (α)</span>
+                            <span class="control-val" id="val-lr">0.05</span>
+                        </label>
+                        <input type="range" id="input-lr" min="0.001" max="0.5" step="0.001" value="0.05" oninput="updateLR(this.value)">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label-row">
+                            <span>Iteraciones (Épocas)</span>
+                            <span class="control-val" id="val-epochs">100</span>
+                        </label>
+                        <input type="range" id="input-epochs" min="10" max="1000" step="10" value="100" oninput="updateEpochs(this.value)">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                    <button class="btn btn-primary" id="btn-train-model" onclick="runTraining()" style="flex: 2;">
+                        ⚡ Entrenar Modelo
+                    </button>
+                    <button class="btn" id="btn-stop-train" onclick="stopGDTraining()" disabled style="flex: 1;">
+                        ⏸️ Detener
+                    </button>
+                </div>
+
+                <div class="training-status" id="training-status-box">
+                    <span>Estado: <strong>Esperando Entrenamiento</strong></span>
+                    <span id="train-metrics-summary">Coste (MSE): --</span>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>Parámetros Ajustados:</strong></p>
+                    <div style="font-family: monospace; margin-top: 0.25rem; font-size: 0.8rem;">
+                        Pendiente (m): <span id="param-m" style="color:var(--accent); font-weight:bold;">0.00</span><br>
+                        Intersección (b): <span id="param-b" style="color:var(--accent); font-weight:bold;">0.50</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Classification Link -->
+            <div class="tab-pane" id="pane-classify">
+                <div>
+                    <h2 class="section-title">Regresión Aplicada a Clasificación</h2>
+                    <p class="section-desc">¿Cómo se convierte la salida continua de la recta en una decisión binaria de clase? Aplicamos una frontera de decisión.</p>
+                </div>
+
+                <div class="info-box">
+                    <p><span class="info-badge classification">Lógica</span> Predicción = <strong>Clase 1</strong> si <em>y ≥ Umbral</em>; de lo contrario, <strong>Clase 0</strong>.</p>
+                    <p>La línea punteada blanca representa la <strong>Frontera de Decisión</strong> (donde <em>mx + b = Umbral</em>).</p>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label-row">
+                        <span>Umbral de Decisión</span>
+                        <span class="control-val" id="val-threshold" style="font-weight:700;">0.50</span>
+                    </label>
+                    <input type="range" id="input-threshold" min="0.0" max="1.0" step="0.01" value="0.50" oninput="updateThreshold(this.value)">
+                </div>
+
+                <div class="info-box" style="background: rgba(244, 63, 94, 0.03); border-color: rgba(244, 63, 94, 0.1);">
+                    <p>⚠️ <strong>El Problema de los Outliers en Regresión Lineal:</strong></p>
+                    <p style="font-size: 0.8rem; margin-top: 0.25rem;">
+                        Prueba cargando el dataset <strong>"Con Outliers"</strong>. Notarás cómo puntos alejados en la clase 1 "tiran" de la recta hacia arriba, moviendo la frontera de decisión y desclasificando puntos que antes eran correctos. Esta es la motivación principal para usar <strong>Regresión Logística</strong> en lugar de Regresión Lineal para clasificar.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tab 4: Performance Evaluation -->
+            <div class="tab-pane" id="pane-eval">
+                <div>
+                    <h2 class="section-title">Evaluación del Desempeño</h2>
+                    <p class="section-desc">Métricas cuantitativas que analizan qué tan bien se ajusta la recta (regresión) y qué tan bien separa los grupos (clasificación).</p>
+                </div>
+
+                <!-- Regression metrics -->
+                <div class="control-group">
+                    <h3 style="font-size: 0.9rem; font-weight:700; color: var(--text-primary);">Métricas de Regresión</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.25rem;">
+                        <div class="metric-card" style="padding: 0.75rem;">
+                            <span class="metric-title" style="font-size: 0.7rem;">Error Cuadrático Medio (MSE)</span>
+                            <span class="metric-val" id="metric-mse" style="font-size: 1.25rem;">0.00</span>
+                        </div>
+                        <div class="metric-card" style="padding: 0.75rem;">
+                            <span class="metric-title" style="font-size: 0.7rem;">Coeficiente R²</span>
+                            <span class="metric-val" id="metric-r2" style="font-size: 1.25rem;">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Classification metrics -->
+                <div class="control-group" style="margin-top: 0.5rem;">
+                    <h3 style="font-size: 0.9rem; font-weight:700; color: var(--text-primary);">Métricas de Clasificación</h3>
+                    
+                    <div class="confusion-matrix-wrapper" style="margin: 0.5rem 0;">
+                        <div class="matrix-header-x">
+                            <div class="matrix-header-cell">Pred. 0</div>
+                            <div class="matrix-header-cell">Pred. 1</div>
+                        </div>
+                        <div class="matrix-grid">
+                            <div class="matrix-label-y">Real 0 / 1</div>
+                            <!-- True Negatives (Real 0, Pred 0) -->
+                            <div class="matrix-cell tn" id="cell-tn">
+                                <span class="matrix-cell-val" id="val-tn">0</span>
+                                <span class="matrix-cell-lbl">TN</span>
+                            </div>
+                            <!-- False Positives (Real 0, Pred 1) -->
+                            <div class="matrix-cell fp" id="cell-fp">
+                                <span class="matrix-cell-val" id="val-fp">0</span>
+                                <span class="matrix-cell-lbl">FP</span>
+                            </div>
+                            <!-- False Negatives (Real 1, Pred 0) -->
+                            <div class="matrix-cell fn" id="cell-fn">
+                                <span class="matrix-cell-val" id="val-fn">0</span>
+                                <span class="matrix-cell-lbl">FN</span>
+                            </div>
+                            <!-- True Positives (Real 1, Pred 1) -->
+                            <div class="matrix-cell tp" id="cell-tp">
+                                <span class="matrix-cell-val" id="val-tp">0</span>
+                                <span class="matrix-cell-lbl">TP</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <div class="metric-card" style="padding: 0.6rem;">
+                            <span class="metric-title" style="font-size: 0.65rem;">Precisión (Accuracy)</span>
+                            <span class="metric-val" id="metric-acc" style="font-size: 1.1rem; color: var(--accent);">0.0%</span>
+                        </div>
+                        <div class="metric-card" style="padding: 0.6rem;">
+                            <span class="metric-title" style="font-size: 0.65rem;">Precisión (Precision)</span>
+                            <span class="metric-val" id="metric-prec" style="font-size: 1.1rem; color: var(--class-1);">0.0%</span>
+                        </div>
+                        <div class="metric-card" style="padding: 0.6rem;">
+                            <span class="metric-title" style="font-size: 0.65rem;">Sensibilidad (Recall)</span>
+                            <span class="metric-val" id="metric-rec" style="font-size: 1.1rem; color: var(--class-1);">0.0%</span>
+                        </div>
+                        <div class="metric-card" style="padding: 0.6rem;">
+                            <span class="metric-title" style="font-size: 0.65rem;">F1-Score</span>
+                            <span class="metric-val" id="metric-f1" style="font-size: 1.1rem; color: #fff;">0.0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Canvas Visualization Area -->
+        <section class="card visualizer-card" id="visualization-section">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 class="section-title" style="border-color: var(--accent);">Visualización en Tiempo Real</h2>
+                    <p class="section-desc">Eje X: Entrada [0, 1] | Eje Y (Salida continua de la recta, o Clase 0/1)</p>
+                </div>
+            </div>
+
+            <!-- Interactive Drawing Canvas container -->
+            <div class="canvas-container">
+                <canvas id="canvas-plot"></canvas>
+                
+                <!-- Overlay Legends -->
+                <div class="canvas-legend">
+                    <div class="legend-item">
+                        <span class="legend-dot c0"></span>
+                        <span>Clase 0 (Y=0)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot c1"></span>
+                        <span>Clase 1 (Y=1)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-line"></span>
+                        <span>Modelo (y=mx+b)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-boundary"></span>
+                        <span>Frontera</span>
+                    </div>
+                </div>
+
+                <!-- Canvas Options Toolbar -->
+                <div class="canvas-toolbar">
+                    <button class="tool-btn" id="btn-toggle-grid" title="Mostrar/Ocultar Cuadrícula" onclick="toggleGrid()">🌐</button>
+                    <button class="tool-btn" id="btn-toggle-residuals" title="Mostrar Proyecciones (Residuales)" onclick="toggleResiduals()">📏</button>
+                    <button class="tool-btn" id="btn-toggle-regions" title="Mostrar Regiones de Clasificación" onclick="toggleRegions()">🎨</button>
+                </div>
+            </div>
+
+            <!-- Conceptual Footer inside main container -->
+            <div class="info-box" style="margin-top: 0.25rem;">
+                <p>📊 <strong>Interpretación del Gráfico:</strong></p>
+                <p style="font-size: 0.8rem; margin-top: 0.25rem;">
+                    La recta de regresión lineal intenta predecir la etiqueta (0 o 1) a partir de la variable X. Las líneas de proyección de color gris (si están activadas 📏) conectan cada punto con la recta; el cuadrado de estas longitudes es lo que el modelo intenta minimizar (el error). El área sombreada denota las predicciones de clase según la frontera de decisión actual.
+                </p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>Proyecto Final - Asignatura de Inteligencia Artificial | Desarrollado por Camilo Hernandez, Fernando Vega y Jesus Jimenez &copy; 2026</p>
+    </footer>
+
+    <!-- Core Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
