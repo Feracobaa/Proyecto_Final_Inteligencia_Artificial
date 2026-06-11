@@ -238,7 +238,229 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
     border: 1px solid var(--border-color);
 }
 
+.features-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+    background: rgba(0,0,0,0.2);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    margin-top: 0.5rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    user-select: none;
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+}
+
+.checkbox-item:hover {
+    color: #fff;
+}
+
+.checkbox-item input[type="checkbox"] {
+    accent-color: var(--accent);
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+
 .info-list { margin-left: 1.5rem; line-height: 1.6; }
 .info-list li { margin-bottom: 0.5rem; }
 
 footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: auto;}
+
+/* Module Selector Bar */
+.module-nav {
+    display: flex;
+    background: rgba(9, 13, 22, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.5rem 1.5rem;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 120;
+    backdrop-filter: blur(12px);
+    justify-content: center;
+}
+.module-nav-btn {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: var(--transition-fast);
+}
+.module-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+.module-nav-btn.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Módulo App visibility */
+.app-module {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+.app-module.active {
+    display: block;
+}
+
+/* Selector de clase en Datos 2D */
+.class-selector {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.selector-option {
+    flex: 1;
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: var(--transition-fast);
+}
+
+.selector-option.class-0-opt {
+    color: var(--class-0);
+    background: rgba(244, 63, 94, 0.02);
+}
+
+.selector-option.class-0-opt.active {
+    background: rgba(244, 63, 94, 0.1);
+    border-color: var(--class-0);
+    box-shadow: 0 0 10px rgba(244, 63, 94, 0.2);
+}
+
+.selector-option.class-1-opt {
+    color: var(--class-1);
+    background: rgba(16, 185, 129, 0.02);
+}
+
+.selector-option.class-1-opt.active {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--class-1);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+/* Contenedor del Canvas y sus herramientas */
+.canvas-container {
+    position: relative;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    min-height: 430px;
+    flex-grow: 1;
+}
+
+canvas#canvas-plot {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+}
+
+.canvas-legend {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    background: rgba(9, 13, 22, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    pointer-events: none;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.legend-dot.c0 { background: var(--class-0); }
+.legend-dot.c1 { background: var(--class-1); }
+.legend-line {
+    width: 15px;
+    height: 2px;
+    background: var(--accent);
+}
+.legend-boundary {
+    width: 15px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 2px dashed #fff;
+}
+
+.canvas-toolbar {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tool-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(9, 13, 22, 0.85);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: var(--transition-fast);
+}
+
+.tool-btn:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Estado del entrenamiento OLS/GD */
+.training-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    border: 1px solid var(--border-color);
+}
