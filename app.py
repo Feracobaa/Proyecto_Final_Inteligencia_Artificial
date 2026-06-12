@@ -443,15 +443,22 @@ with tab_sim:
                 
         # 5. Puntos y residuales
         if len(df) > 0:
+            # Ensure numeric types for X and Y
+            df["X"] = pd.to_numeric(df["X"], errors="coerce")
+            df["Y"] = pd.to_numeric(df["Y"], errors="coerce")
+            df = df.dropna(subset=["X", "Y"]).reset_index(drop=True)
             df0 = df[df["Clase"] == 0]
             df1 = df[df["Clase"] == 1]
-            
+
             # Dibujar residuales primero para que queden de fondo
             if show_residuals:
-                for idx, row in df.iterrows():
-                    pred_y = float(m_curr) * float(row["X"]) + float(b_curr)
-                    ax.plot([row["X"], row["X"]], [row["Y"], pred_y], color="#ffffff4d", linestyle=":", linewidth=1.2)
-                    
+                for _, row in df.iterrows():
+                    try:
+                        pred_y = float(m_curr) * float(row["X"]) + float(b_curr)
+                        ax.plot([row["X"], row["X"]], [row["Y"], pred_y], color="#ffffff4d", linestyle=":", linewidth=1.2)
+                    except Exception:
+                        continue
+            
             # Dibujar puntos
             ax.scatter(df0["X"], df0["Y"], color=color_class_0, s=120, edgecolors="white", linewidth=1.5, zorder=5, label="Clase 0 (Y=0)")
             ax.scatter(df1["X"], df1["Y"], color=color_class_1, s=120, edgecolors="white", linewidth=1.5, zorder=5, label="Clase 1 (Y=1)")
