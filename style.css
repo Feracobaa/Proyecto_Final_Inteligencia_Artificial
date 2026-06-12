@@ -434,7 +434,7 @@ canvas#canvas-plot {
 }
 
 .tool-btn {
-    width: 32px;
+    padding: 0.25rem 0.75rem;
     height: 32px;
     border-radius: 8px;
     background: rgba(9, 13, 22, 0.85);
@@ -444,7 +444,8 @@ canvas#canvas-plot {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
     transition: var(--transition-fast);
 }
 

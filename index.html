@@ -26,7 +26,7 @@
     <!-- Module Selector Navigation -->
     <div class="module-nav">
         <button class="module-nav-btn active" id="module-btn-sim" onclick="switchModule('sim')">
-            🎮 Módulo 1: Simulador Interactivo 2D (Regresión Lineal)
+            Módulo 1: Simulador Interactivo 2D (Regresión Lineal)
         </button>
         
     </div>
@@ -66,7 +66,7 @@
                     </div>
 
                     <div class="info-box">
-                        <p>💡 <strong>¿Cómo usar?</strong></p>
+                        <p><strong>Instrucciones de uso:</strong></p>
                         <ul class="info-list" style="margin-left: 1rem; font-size: 0.8rem;">
                             <li>Hacer clic izquierdo en el canvas para agregar un punto.</li>
                             <li>Hacer clic derecho sobre un punto para cambiar su clase.</li>
@@ -90,16 +90,16 @@
                         <label class="control-label-row"><span>Cargar Puntos desde CSV (2D)</span></label>
                         <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.25rem;">
                             <label for="csv-file-sim" class="btn" style="cursor: pointer; font-size: 0.8rem; padding: 0.5rem 0.8rem; flex-grow: 1; text-align: center; margin: 0;">
-                                📁 Seleccionar CSV
+                                Seleccionar CSV
                             </label>
                             <input type="file" id="csv-file-sim" accept=".csv" style="display:none;" onchange="handleSimFileUpload(event)">
-                            <button class="btn" onclick="downloadSimSampleCSV()" title="Descargar plantilla CSV" style="padding: 0.5rem; font-size: 0.8rem;">📥 Plantilla</button>
+                            <button class="btn" onclick="downloadSimSampleCSV()" title="Descargar plantilla CSV" style="padding: 0.5rem; font-size: 0.8rem;">Plantilla</button>
                         </div>
                         <span id="sim-file-name-display" style="font-size: 0.75rem; color: var(--text-muted); text-align: center;">Ningún archivo seleccionado.</span>
                     </div>
 
                     <button class="btn btn-danger" id="btn-clear-data" onclick="clearData()" style="margin-top: 0.25rem;">
-                        🗑️ Borrar Todos los Puntos
+                        Borrar Todos los Puntos
                     </button>
                 </div>
 
@@ -147,10 +147,10 @@
 
                     <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
                         <button class="btn btn-primary" id="btn-train-model" onclick="runSimulatorTraining()" style="flex: 2;">
-                            ⚡ Entrenar Modelo
+                            Entrenar Modelo
                         </button>
                         <button class="btn" id="btn-stop-train" onclick="stopSimulatorGDTraining()" disabled style="flex: 1;">
-                            ⏹️ Detener
+                            Detener
                         </button>
                     </div>
 
@@ -189,7 +189,7 @@
                     </div>
 
                     <div class="info-box" style="background: rgba(244, 63, 94, 0.03); border-color: rgba(244, 63, 94, 0.1);">
-                        <p>⚠️ <strong>El Impacto de los Outliers en Regresión:</strong></p>
+                        <p><strong>El Impacto de los Outliers en Regresión:</strong></p>
                         <p style="font-size: 0.8rem; margin-top: 0.25rem;">
                             Prueba cargando el conjunto <strong>"Con Outliers"</strong>. Observarás cómo puntos alejados fuerzan a la línea de regresión a rotar hacia arriba para minimizar el error cuadrático, desplazando la frontera de clasificación y provocando que elementos anteriormente clasificados de forma correcta ahora resulten erróneos.
                         </p>
@@ -305,15 +305,15 @@
 
                     <!-- Canvas Options Toolbar -->
                     <div class="canvas-toolbar">
-                        <button class="tool-btn" id="btn-toggle-grid" title="Mostrar/Ocultar Cuadrícula" onclick="toggleGrid()">🌐</button>
-                        <button class="tool-btn" id="btn-toggle-residuals" title="Mostrar Proyecciones (Residuales)" onclick="toggleResiduals()">📏</button>
-                        <button class="tool-btn" id="btn-toggle-regions" title="Mostrar Regiones de Clasificación" onclick="toggleRegions()">🎨</button>
+                        <button class="tool-btn" id="btn-toggle-grid" title="Mostrar/Ocultar Cuadrícula" onclick="toggleGrid()">Cuadrícula</button>
+                        <button class="tool-btn" id="btn-toggle-residuals" title="Mostrar Proyecciones (Residuales)" onclick="toggleResiduals()">Residuales</button>
+                        <button class="tool-btn" id="btn-toggle-regions" title="Mostrar Regiones de Clasificación" onclick="toggleRegions()">Regiones</button>
                     </div>
                 </div>
 
                 <!-- Conceptual Box -->
                 <div class="info-box" style="margin-top: 0.25rem;">
-                    <p>📊 <strong>Análisis del Gráfico de Regresión Lineal:</strong></p>
+                    <p><strong>Análisis del Gráfico de Regresión Lineal:</strong></p>
                     <p style="font-size: 0.8rem; margin-top: 0.25rem;">
                         Los puntos se grafican en 2D según sus valores. Las líneas grises discontinuas (residuales) muestran el error vertical individual de cada muestra hacia la recta de regresión. El área de color de fondo representa la clase proyectada (Rosada para 0, Verde para 1) determinada por el umbral de decisión.
                     </p>
@@ -344,10 +344,6 @@
                         <span class="tab-number">F</span>
                         4. Predicciones
                     </button>
-                    <button class="tab-btn" onclick="switchTab('ai')" id="btn-tab-ai">
-                        <span class="tab-number">H</span>
-                        5. Documentación IA
-                    </button>
                 </nav>
                 
                 <div class="dataset-status" id="dataset-status">
@@ -365,7 +361,7 @@
 
                     <div class="upload-section info-box">
                         <label for="csv-file" class="btn btn-primary" style="display:inline-flex; width:auto; cursor:pointer;">
-                            📁 Cargar archivo CSV
+                            Cargar archivo CSV
                         </label>
                         <input type="file" id="csv-file" accept=".csv" style="display:none;" onchange="handleFileUpload(event)">
                         <span style="margin-left: 1rem;" id="file-name-display">Ningún archivo seleccionado.</span>
@@ -468,16 +464,16 @@
                     </div>
 
                     <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem; flex-wrap: wrap;">
-                        <button class="btn btn-primary" id="btn-train" onclick="trainLogisticRegression()" disabled>⚡ Entrenar Modelo</button>
-                        <button class="btn" id="btn-export-model" onclick="exportModel()" disabled>📤 Exportar Modelo (JSON)</button>
-                        <label for="import-model-file" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; margin: 0;">📥 Importar Modelo (JSON)</label>
+                        <button class="btn btn-primary" id="btn-train" onclick="trainLogisticRegression()" disabled>Entrenar Modelo</button>
+                        <button class="btn" id="btn-export-model" onclick="exportModel()" disabled>Exportar Modelo (JSON)</button>
+                        <label for="import-model-file" class="btn" style="cursor: pointer; display: inline-flex; align-items: center; margin: 0;">Importar Modelo (JSON)</label>
                         <input type="file" id="import-model-file" accept=".json" style="display:none;" onchange="importModel(event)">
                     </div>
                     <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Inicia el entrenamiento iterativo o importa/exporta los coeficientes y estadísticas del modelo en formato JSON para reutilizarlos de inmediato.</p>
 
                     <div id="training-results" style="display:none; margin-top: 1.5rem;">
                         <div class="info-box success" id="training-status" style="margin-bottom: 1rem;">
-                            ✅ Entrenamiento completado. Coste (Log-Loss) final: <span id="final-cost" style="font-weight:bold;">0.0000</span>
+                            Entrenamiento completado. Coste (Log-Loss) final: <span id="final-cost" style="font-weight:bold;">0.0000</span>
                         </div>
 
                         <div id="cost-plot-section" style="margin-bottom: 1.5rem;">
@@ -627,32 +623,6 @@
                     </div>
                     <div id="predict-warning" class="info-box">
                         El modelo debe estar entrenado antes de realizar predicciones.
-                    </div>
-                </div>
-
-                <!-- Tab 5: Información de IA -->
-                <div class="tab-pane" id="pane-ai">
-                    <h2 class="section-title">G y H. Despliegue y Uso de IA Generativa</h2>
-                    
-                    <h3 style="margin-top: 1rem; font-size: 1rem; color: var(--accent);">G. Despliegue Cloud</h3>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                        Esta aplicación fue construida exclusivamente en el front-end (HTML/JS/CSS) sin necesidad de un backend. Esto permite alojarla y desplegarla fácilmente y sin costo en entornos cloud estáticos como <strong>GitHub Pages</strong>. Todo el procesamiento matemático pesado corre de manera distribuida en el navegador del cliente.
-                    </p>
-
-                    <h3 style="margin-top: 1rem; font-size: 1rem; color: var(--accent);">H. Herramientas de IA Generativa en el Desarrollo</h3>
-                    <div class="info-box" style="margin-top: 0.5rem;">
-                        <p>Durante el desarrollo de esta plataforma se utilizó <strong>Google DeepMind Antigravity (Gemini)</strong> como pair programmer agentic.</p>
-                        
-                        <ul class="info-list" style="margin-top: 0.5rem;">
-                            <li><strong>¿Qué fue generado por la IA?</strong><br>
-                            La estructura HTML semántica interactiva, los estilos CSS complejos "Glassmorphism", y toda la base algorítmica matemática en `app.js` (desarrollo y simulación del lienzo Canvas, OLS, gradiente descendiente continuo, parseo CSV, normalización matemática, descenso del gradiente de Regresión Logística y trazado de curvas ROC).</li>
-                            
-                            <li><strong>¿Qué fue corregido/ajustado?</strong><br>
-                            Se consolidó la separación de conceptos entre la aproximación lineal en 2D (con afectación por outliers) y la regresión logística para problemas de clasificación reales. Se incorporó la normalización Z-Score para evitar divergencias en el gradiente.</li>
-                            
-                            <li><strong>¿Qué fue comprendido por el estudiante?</strong><br>
-                            El estudiante comprende cómo la regresión lineal puede actuar como clasificador al imponer un umbral, pero que es vulnerable a desviaciones drásticas ante outliers debido a la función de pérdida cuadrática. Comprende cómo la regresión logística soluciona esto mapeando salidas a probabilidades [0, 1] mediante la sigmoide y minimizando la entropía cruzada.</li>
-                        </ul>
                     </div>
                 </div>
 

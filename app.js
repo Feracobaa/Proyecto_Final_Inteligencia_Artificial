@@ -63,7 +63,7 @@ function switchModule(moduleName) {
         document.getElementById('module-btn-sim').classList.add('active');
         stopSimulatorGDTraining();
         setTimeout(resizeCanvas, 50);
-
+    }
 }
 
 // Tabs del Módulo 1 (Simulador 2D)
@@ -1110,7 +1110,7 @@ function processAndSplitData() {
     
     document.getElementById('data-summary').style.display = 'block';
     document.getElementById('data-summary').innerHTML = `
-        ✅ Datos procesados exitosamente.<br>
+        Datos procesados exitosamente.<br>
         <strong>Target:</strong> ${targetCol}<br>
         <strong>Features:</strong> ${features.join(', ')}<br>
         <strong>Set Entrenamiento (Train):</strong> ${trainData.length} registros.<br>
@@ -1671,7 +1671,7 @@ function importModel(event) {
             document.getElementById('eval-warning').style.display = 'none';
             document.getElementById('predict-warning').style.display = 'none';
             document.getElementById('training-results').style.display = 'block';
-            document.getElementById('training-status').innerHTML = `✅ Modelo restaurado desde archivo JSON con éxito.`;
+            document.getElementById('training-status').innerHTML = `Modelo restaurado desde archivo JSON con éxito.`;
             document.getElementById('cost-plot-section').style.display = 'none'; // No hay costo de GD multivariable
             
             renderCoefficients();

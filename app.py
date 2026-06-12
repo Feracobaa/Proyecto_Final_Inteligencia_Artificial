@@ -204,7 +204,7 @@ def calculate_metrics(df, m, b, threshold):
 # ============================================================================
 # ESTRUCTURACIÓN DE INTERFAZ DE USUARIO
 # ============================================================================
-st.title("📊 Plataforma Educativa: Regresión Lineal vs Clasificación")
+st.title("Plataforma Educativa: Regresión Lineal vs Clasificación")
 st.markdown(
     "Esta plataforma interactiva permite explorar el funcionamiento de la **Regresión Lineal** aplicada a problemas de **Clasificación Binaria**, "
     "analizando sus limitaciones con outliers y la importancia del umbral de decisión."
@@ -212,24 +212,24 @@ st.markdown(
 
 # Barra lateral para control de Datos y Parámetros
 with st.sidebar:
-    st.header("⚙️ Configuración")
+    st.header("Configuración")
     
     # Inicializar conjunto de datos por defecto si no existe
     if "df" not in st.session_state:
         st.session_state.df = PRESETS["Separable"].copy()
 
     # Dos ejemplos principales listos para probar
-    st.subheader("🚀 Ejemplos Didácticos")
+    st.subheader("Ejemplos Didácticos")
     col_ex1, col_ex2 = st.columns(2)
     with col_ex1:
-        if st.button("🟢 Ejemplo 1: Separable", width="stretch", help="Caso ideal de regresión lineal"):
+        if st.button("Ejemplo 1: Separable", width="stretch", help="Caso ideal de regresión lineal"):
             st.session_state.df = PRESETS["Separable"].copy()
             st.session_state.trained = False
             st.session_state.history = []
             st.session_state.data_source_selector = "-- Seleccionar opción --"
             st.rerun()
     with col_ex2:
-        if st.button("🔴 Ejemplo 2: Outliers", width="stretch", help="Demostración de problemas con outliers"):
+        if st.button("Ejemplo 2: Outliers", width="stretch", help="Demostración de problemas con outliers"):
             st.session_state.df = PRESETS["Con Outliers"].copy()
             st.session_state.trained = False
             st.session_state.history = []
@@ -237,7 +237,7 @@ with st.sidebar:
             st.rerun()
 
     # Selector de Conjunto de Datos adicional
-    st.subheader("📁 Más Orígenes de Datos")
+    st.subheader("Más Orígenes de Datos")
     
     # Inicializar el estado del selector si no existe
     if "data_source_selector" not in st.session_state:
@@ -251,18 +251,18 @@ with st.sidebar:
     )
     
     if st.session_state.data_source_selector == "Cargar CSV propio":
-        st.markdown("📥 **Descarga ejemplos listos para probar:**")
+        st.markdown("**Descarga ejemplos listos para probar:**")
         try:
             with open("ejemplos_csv/datos_separables.csv", "r", encoding="utf-8") as f:
                 sep_csv = f.read()
-            st.download_button("🟢 Descargar Ejemplo Separable.csv", sep_csv, "datos_separables.csv", "text/csv", use_container_width=True)
+            st.download_button("Descargar Ejemplo Separable.csv", sep_csv, "datos_separables.csv", "text/csv", use_container_width=True)
         except Exception:
             pass
             
         try:
             with open("ejemplos_csv/datos_outliers.csv", "r", encoding="utf-8") as f:
                 out_csv = f.read()
-            st.download_button("🔴 Descargar Ejemplo Outliers.csv", out_csv, "datos_outliers.csv", "text/csv", use_container_width=True)
+            st.download_button("Descargar Ejemplo Outliers.csv", out_csv, "datos_outliers.csv", "text/csv", use_container_width=True)
         except Exception:
             pass
             
@@ -315,7 +315,7 @@ with st.sidebar:
                     # Botón de descarga del dataset actual (incluye escala y binarización)
                     csv_bytes = st.session_state.df.to_csv(index=False).encode('utf-8')
                     st.download_button(
-                        label="💾 Descargar dataset actual",
+                        label="Descargar dataset actual",
                         data=csv_bytes,
                         file_name="dataset_actual.csv",
                         mime="text/csv"
@@ -326,7 +326,7 @@ with st.sidebar:
                 st.error(f"Error procesando el archivo CSV: {e}")
 
     # Conservar y editar los datos en el session state
-    if st.sidebar.button("🔄 Reiniciar Datos a Separables", width="stretch"):
+    if st.sidebar.button("Reiniciar Datos a Separables", width="stretch"):
         st.session_state.df = PRESETS["Separable"].copy()
         st.session_state.trained = False
         st.session_state.history = []
@@ -334,7 +334,7 @@ with st.sidebar:
         st.rerun()
 
     # Configuración de Entrenamiento
-    st.subheader("⚡ Entrenamiento del Modelo")
+    st.subheader("Entrenamiento del Modelo")
     method = st.radio("Método de optimización:", ["Mínimos Cuadrados (OLS)", "Descenso de Gradiente (GD)"])
     
     gd_lr = 0.05
@@ -344,21 +344,21 @@ with st.sidebar:
         gd_epochs = st.slider("Iteraciones (Épocas):", 10, 1000, 100, 10)
 
     # Umbral de clasificación
-    st.subheader("🎯 Clasificación")
+    st.subheader("Clasificación")
     threshold = st.slider("Umbral de decisión (T):", 0.00, 1.00, 0.50, 0.01)
 
     # Configuración Gráfica
-    st.subheader("🎨 Opciones de Visualización")
+    st.subheader("Opciones de Visualización")
     show_grid = st.checkbox("Mostrar Cuadrícula", value=True)
     show_residuals = st.checkbox("Mostrar Residuales (Errores)", value=True)
     show_regions = st.checkbox("Mostrar Regiones de Clasificación", value=True)
 
 # Pestañas principales
 tab_sim, tab_train, tab_eval, tab_docs = st.tabs([
-    "🎮 Simulador e Interactividad",
-    "⚡ Entrenamiento en Tiempo Real",
-    "📊 Evaluación de Desempeño",
-    "📘 Conceptos y Documentación"
+    "Simulador e Interactividad",
+    "Entrenamiento en Tiempo Real",
+    "Evaluación de Desempeño",
+    "Conceptos y Documentación"
 ])
 
 # Obtener dataframe actual del estado de sesión
@@ -371,7 +371,7 @@ with tab_sim:
     col_main, col_edit = st.columns([2, 1])
     
     with col_edit:
-        st.subheader("📝 Gestión de Puntos")
+        st.subheader("Gestión de Puntos")
         st.markdown(
             "Puedes añadir nuevos registros al final de la tabla, modificar las coordenadas de X e Y "
             "(rango `0` a `1`) o alterar la clase (`0` para clase Rosada, `1` para clase Verde)."
@@ -397,10 +397,10 @@ with tab_sim:
             st.session_state.history = []
             st.rerun()
             
-        st.info("💡 **Consejo:** Modifica la tabla para simular distribuciones específicas, luego haz clic en '⚡ Entrenar Modelo'.")
+        st.info("**Consejo:** Modifica la tabla para simular distribuciones específicas, luego haz clic en 'Entrenar Modelo'.")
         
         st.write("---")
-        st.subheader("➕ Añadir Punto Rápido")
+        st.subheader("Añadir Punto Rápido")
         with st.form("add_point_form", clear_on_submit=True):
             new_x = st.slider("Coordenada X:", 0.0, 1.0, 0.5, 0.01)
             new_y = st.slider("Coordenada Y:", 0.0, 1.0, 0.5, 0.01)
@@ -415,7 +415,7 @@ with tab_sim:
                 st.rerun()
 
         # Ejecutar entrenamiento rápido OLS/GD
-        if st.button("⚡ Entrenar Modelo", type="primary", width="stretch"):
+        if st.button("Entrenar Modelo", type="primary", width="stretch"):
             if len(df) < 2:
                 st.error("Por favor, ingresa al menos 2 puntos para comenzar el entrenamiento.")
             else:
@@ -450,7 +450,7 @@ with tab_sim:
                 st.rerun()
 
     with col_main:
-        st.subheader("📈 Visualización del Plano Cartesiano")
+        st.subheader("Visualización del Plano Cartesiano")
         
         # Obtener coeficientes actuales
         m_curr = st.session_state.model_m
@@ -598,22 +598,22 @@ with tab_sim:
 # PESTAÑA 2: ENTRENAMIENTO EN TIEMPO REAL (ANIMACIÓN GD)
 # ============================================================================
 with tab_train:
-    st.subheader("⏳ Animación de Convergencia del Gradiente Descendiente")
+    st.subheader("Animación de Convergencia del Gradiente Descendiente")
     st.markdown(
         "Al utilizar **Descenso de Gradiente (GD)**, puedes observar cómo el modelo actualiza iterativamente "
         "la pendiente ($m$) y la intersección ($b$) en cada época para minimizar el error de coste (MSE)."
     )
     
     if method != "Descenso de Gradiente (GD)":
-        st.info("ℹ️ Para ver la animación en tiempo real, selecciona el método 'Descenso de Gradiente (GD)' en la barra lateral.")
+        st.info("Para ver la animación en tiempo real, selecciona el método 'Descenso de Gradiente (GD)' en la barra lateral.")
     elif len(df) < 2:
         st.warning("Agrega al menos 2 puntos en la pestaña anterior para poder entrenar el modelo.")
     else:
         col_ctrl, col_graph = st.columns([1, 2])
         
         with col_ctrl:
-            st.write("📊 **Control del Entrenamiento**")
-            btn_play = st.button("▶️ Iniciar Animación de GD", width="stretch")
+            st.write("**Control del Entrenamiento**")
+            btn_play = st.button("Iniciar Animación de GD", width="stretch")
             
             # Placeholders de texto
             status_txt = st.empty()
@@ -784,13 +784,13 @@ with tab_train:
             st.session_state.model_b = b
             st.session_state.trained = True
             st.session_state.history = [{"epoch": ep, "mse": ms} for ep, ms in zip(epochs_list, mse_history)]
-            status_txt.success("🎉 **¡Entrenamiento completado!** Los parámetros se han actualizado.")
+            status_txt.success("**¡Entrenamiento completado!** Los parámetros se han actualizado.")
 
 # ============================================================================
 # PESTAÑA 3: EVALUACIÓN DE DESEMPEÑO
 # ============================================================================
 with tab_eval:
-    st.subheader("📊 Métricas Estadísticas del Modelo")
+    st.subheader("Métricas Estadísticas del Modelo")
     st.markdown(
         "Al aplicar Regresión Lineal para Clasificación, analizamos la cercanía del ajuste continuo (Métricas de Regresión) "
         "y la calidad de la decisión final (Métricas de Clasificación)."
@@ -846,7 +846,7 @@ with tab_eval:
         col_reg, col_class = st.columns([1, 1])
         
         with col_reg:
-            st.write("📈 **Métricas del Ajuste Lineal**")
+            st.write("**Métricas del Ajuste Lineal**")
             st.info(f"**Error Cuadrático Medio (MSE):** `{metrics['mse']:.5f}`")
             st.info(f"**Coeficiente de Determinación (R²):** `{metrics['r2']:.4f}`")
             st.markdown(
@@ -855,7 +855,7 @@ with tab_eval:
             )
             
         with col_class:
-            st.write("🧩 **Matriz de Confusión**")
+            st.write("**Matriz de Confusión**")
             
             # Estructurar matriz de confusión
             matrix_data = pd.DataFrame(
@@ -876,11 +876,11 @@ with tab_eval:
 # PESTAÑA 4: CONCEPTOS Y DOCUMENTACIÓN
 # ============================================================================
 with tab_docs:
-    st.subheader("📘 Marco Teórico y Limitaciones de la Regresión Lineal")
+    st.subheader("Marco Teórico y Limitaciones de la Regresión Lineal")
     
     st.markdown(
         r"""
-        ### ⚖️ Regresión Lineal para Clasificación Binaria
+        ### Regresión Lineal para Clasificación Binaria
         La regresión lineal clásica busca encontrar una recta de la forma:
         
         $$\hat{y} = mx + b$$
@@ -895,7 +895,7 @@ with tab_docs:
         
         ---
         
-        ### ⚠️ El Impacto de los Outliers (El Problema de la Recta)
+        ### El Impacto de los Outliers (El Problema de la Recta)
         Aunque la regresión lineal puede funcionar para clasificar cuando los datos son perfectamente separables y balanceados, sufre gravemente ante la presencia de **valores atípicos (outliers)**.
         
         **¿Por qué sucede esto?**
@@ -908,11 +908,9 @@ with tab_docs:
         
         ---
         
-        ### 🧠 Integrantes del Proyecto
+        ### Integrantes del Proyecto
         *   **Camilo Hernandez**
         *   **Fernando Vega**
         *   **Jesus Jimenez**
-        
-        *Proyecto adaptado a Python / Streamlit para una mejor funcionalidad educativa.*
         """
     )

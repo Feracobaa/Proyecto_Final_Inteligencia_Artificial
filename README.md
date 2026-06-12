@@ -1,7 +1,7 @@
 # Plataforma de Regresión Lineal y Clasificación (Python / Streamlit)
 
-🔗 **[Visita la aplicación web funcional en Streamlit Cloud](https://proyectofinalinteligenciaartificial.streamlit.app/)**  
-💻 **[Repositorio en GitHub](https://github.com/Candresh9/Proyecto_Final_Inteligencia_Artificial)**
+**[Visita la aplicación web funcional en Streamlit Cloud](https://proyectofinalinteligenciaartificial.streamlit.app/)**  
+**[Repositorio en GitHub](https://github.com/Candresh9/Proyecto_Final_Inteligencia_Artificial)**
 
 
 Este repositorio contiene el Proyecto Final de la asignatura de Inteligencia Artificial desarrollado por **Camilo Hernandez, Fernando Vega y Jesus Jimenez**.
@@ -10,14 +10,14 @@ La aplicación es una plataforma interactiva de **Machine Learning** migrada a *
 
 ---
 
-## 📘 Documentación del Proyecto
+## Documentación del Proyecto
 
 Toda la información de la arquitectura, fórmulas matemáticas, el impacto de los valores atípicos (outliers) y detalles de la migración se encuentran en el archivo:
-📄 **[DOCUMENTACION.md](DOCUMENTACION.md)**
+**[DOCUMENTACION.md](DOCUMENTACION.md)**
 
 ---
 
-## 🚀 Ejecución Local
+## Ejecución Local
 
 Si deseas ejecutar la aplicación interactivamente en tu máquina local:
 
@@ -45,7 +45,7 @@ Si deseas ejecutar la aplicación interactivamente en tu máquina local:
 
 ---
 
-## 🎯 Cumplimiento de Objetivos Educativos
+## Cumplimiento de Objetivos Educativos
 
 La aplicación demuestra el ciclo de vida completo de un modelo de aprendizaje supervisado:
 *   **A. Estructuración del Problema:** El usuario puede cargar un archivo CSV personalizado o seleccionar datasets predefinidos (Separables, Traslapados, Con Outliers o Aleatorios) mapeando características a coordenadas 2D.

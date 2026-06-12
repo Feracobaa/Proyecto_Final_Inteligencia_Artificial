@@ -1,4 +1,4 @@
-# 📘 Documentación del Proyecto: Regresión Lineal vs Clasificación en Python
+# Documentación del Proyecto: Regresión Lineal vs Clasificación en Python
 
 Este documento detalla la migración y reestructuración de la plataforma educativa original (HTML/CSS/JS) a una aplicación interactiva nativa de **Python** utilizando **Streamlit**, **Pandas**, **Numpy** y **Matplotlib**.
 
