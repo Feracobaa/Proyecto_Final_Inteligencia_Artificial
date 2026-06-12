@@ -1,32 +1,54 @@
-# Plataforma Completa de Clasificación (Regresión Logística)
+# Plataforma de Regresión Lineal y Clasificación (Python / Streamlit)
+
+🔗 **[Visita la aplicación web funcional en Streamlit Cloud aquí](https://proyecto-final-ia.streamlit.app)**
+*(Nota: Una vez desplegada la aplicación en Streamlit Community Cloud usando tu cuenta de GitHub, puedes actualizar esta URL con la dirección pública final).*
 
 Este repositorio contiene el Proyecto Final de la asignatura de Inteligencia Artificial desarrollado por **Camilo Hernandez, Fernando Vega y Jesus Jimenez**.
 
-La aplicación es una plataforma web interactiva de **Machine Learning** que ejecuta todo su procesamiento (parseo de datos, separación, entrenamiento matemático, predicción) directamente en el navegador del usuario utilizando JavaScript puro, sin requerir un backend.
-
-## Cumplimiento de Objetivos Específicos (Rúbrica)
-
-La aplicación demuestra la comprensión integral del ciclo de vida de un modelo supervisado:
-
-*   **A. Estructuración del Problema:** La pestaña *Datos* permite cargar un dataset real (CSV) y seleccionar dinámicamente qué columna representa el objetivo a clasificar (Target) y cuáles son las características predictoras (Features).
-*   **B. Separación de Datos (Train/Test Split):** Antes del entrenamiento, el sistema baraja (shuffles) y separa el dataset según un porcentaje definido por el usuario (ej. 80% entrenamiento, 20% prueba) para evitar el sobreajuste (overfitting).
-*   **C. Entrenamiento de Regresión Logística:** El modelo se entrena en la pestaña *Entrenamiento* utilizando el algoritmo de **Gradiente Descendiente Multivariable**. Se optimiza la función de pérdida *Log-Loss* (Entropía Cruzada) aplicando la función de activación Sigmoide a la combinación lineal de los datos previamente normalizados mediante *Z-Score*.
-*   **D. Interpretación de Coeficientes:** Una vez finalizado el entrenamiento, el sistema despliega una tabla con los pesos ($W$) aprendidos para cada característica e interpreta automáticamente si influyen positiva o negativamente hacia la clase 1.
-*   **E. Evaluación del Modelo:** En la pestaña *Evaluación*, se calculan las proyecciones del modelo sobre los datos nunca antes vistos (Conjunto de Prueba). Se genera la **Matriz de Confusión** y se derivan métricas como *Accuracy*, *Precision*, *Recall* y *F1-Score*.
-*   **F. Predicción con Nuevos Datos:** La pestaña *Predicciones* lee dinámicamente el esquema de variables del CSV cargado y genera un formulario. Permite introducir nuevos registros manuales, normalizarlos bajo la escala del modelo, y retornar una probabilidad y clasificación final.
-*   **G. Despliegue en la Nube:** Al ser una arquitectura 100% frontend (*Single Page Application* en HTML/CSS/JS), está alojada en **GitHub Pages**. Esto significa que está desplegada de forma estable y accesible públicamente sin requerir mantenimiento de servidores.
-*   **H. Uso de IA Generativa:** Documentado internamente en la pestaña "Documentación IA" de la propia plataforma, donde se especifica que se utilizó Google DeepMind Antigravity como copiloto para estructurar la UI, corregir las matemáticas del gradiente multivariable y afianzar los conceptos matemáticos del estudiante.
+La aplicación es una plataforma interactiva de **Machine Learning** migrada a **Python** utilizando **Streamlit**, lo que permite ejecutar cálculos matemáticos complejos de forma nativa (con NumPy y Pandas) y visualizar el ajuste del modelo de regresión lineal para clasificación binaria.
 
 ---
 
-## Despliegue en la Nube
+## 📘 Documentación del Proyecto
 
-🔗 **[Visita la aplicación web funcional aquí](https://Candresh9.github.io/Proyecto_Final_Inteligencia_Artificial/)**
-*(Nota: Asegúrate de habilitar GitHub Pages en la rama `main` en la configuración del repositorio).*
+Toda la información de la arquitectura, fórmulas matemáticas, el impacto de los valores atípicos (outliers) y detalles de la migración se encuentran en el archivo:
+📄 **[DOCUMENTACION.md](DOCUMENTACION.md)**
 
-## Ejecución Local
+---
 
-Si prefieres ejecutarlo localmente:
-1. Clona el repositorio:
-   `git clone https://github.com/Candresh9/Proyecto_Final_Inteligencia_Artificial.git`
-2. Abre el archivo `index.html` en tu navegador favorito.
+## 🚀 Ejecución Local
+
+Si deseas ejecutar la aplicación interactivamente en tu máquina local:
+
+### Requisitos Previos
+* Python 3.9 o superior instalado.
+
+### Pasos de Ejecución
+1. Clona este repositorio en tu computadora:
+   ```bash
+   git clone https://github.com/Candresh9/Proyecto_Final_Inteligencia_Artificial.git
+   ```
+2. Accede al directorio del proyecto:
+   ```bash
+   cd Proyecto_Final_Inteligencia_Artificial
+   ```
+3. Instala las librerías requeridas:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Inicia el servidor de Streamlit:
+   ```bash
+   streamlit run app.py
+   ```
+5. Abre la aplicación en tu navegador en `http://localhost:8501`.
+
+---
+
+## 🎯 Cumplimiento de Objetivos Educativos
+
+La aplicación demuestra el ciclo de vida completo de un modelo de aprendizaje supervisado:
+*   **A. Estructuración del Problema:** El usuario puede cargar un archivo CSV personalizado o seleccionar datasets predefinidos (Separables, Traslapados, Con Outliers o Aleatorios) mapeando características a coordenadas 2D.
+*   **B. Manipulación Interactiva:** Mediante una tabla de base de datos dinámica en pantalla (`st.data_editor`), se pueden agregar, editar coordenadas o eliminar puntos en tiempo real.
+*   **C. Entrenamiento del Modelo:** Permite entrenar mediante **Mínimos Cuadrados Ordinarios (OLS)** de manera analítica instantánea, o visualizar paso a paso la convergencia del **Descenso de Gradiente (GD)** con una animación de la recta en tiempo real.
+*   **D. Evaluación del Desempeño:** Calcula métricas de regresión (MSE, $R^2$) y métricas de clasificación (Matriz de Confusión, Accuracy, Precision, Recall y F1-Score) según el umbral de decisión dinámico seleccionado por el usuario.
+*   **E. Demostración de Limitaciones:** Expone de forma gráfica e interactiva el impacto de los valores atípicos (outliers) al desviar la recta de regresión lineal y desajustar la frontera de clasificación binaria.

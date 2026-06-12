@@ -28,25 +28,7 @@ const POINT_RADIUS_PX = 10;
 const padding = 50;
 
 // Módulo 2: Clasificación Multivariable (Regresión Logística)
-let rawData = [];
-let columns = [];
-let features = [];
-let targetCol = "";
-let trainData = [];
-let testData = [];
-let splitRatio = 0.8;
-let modelWeights = []; // [w1, w2, ..., wn]
-let modelBias = 0;
-let featureStats = {}; // { col: { mean, std } } Z-Score normalización
-let isModelTrained = false;
-let learningRate = 0.1;
-let epochs = 500;
-let scatterChartInstance = null;
-let costChartInstance = null;
-let rocChartInstance = null;
-let costHistory = [];
-let currentThreshold = 0.50; // Umbral interactivo multivariable
-let descriptiveStats = {};   // Estadísticas descriptivas del CSV
+
 
 // ==========================================
 // INICIALIZACIÓN
@@ -81,15 +63,7 @@ function switchModule(moduleName) {
         document.getElementById('module-btn-sim').classList.add('active');
         stopSimulatorGDTraining();
         setTimeout(resizeCanvas, 50);
-    } else {
-        document.getElementById('module-multi-container').classList.add('active');
-        document.getElementById('module-btn-multi').classList.add('active');
-        stopSimulatorGDTraining();
-        // Redimensionar los gráficos multivariables
-        if (scatterChartInstance) scatterChartInstance.resize();
-        if (costChartInstance) costChartInstance.resize();
-        if (rocChartInstance) rocChartInstance.resize();
-    }
+
 }
 
 // Tabs del Módulo 1 (Simulador 2D)
