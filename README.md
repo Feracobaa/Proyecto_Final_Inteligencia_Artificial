@@ -1,7 +1,8 @@
 # Plataforma de Regresión Lineal y Clasificación (Python / Streamlit)
 
-🔗 **[Visita la aplicación web funcional en Streamlit Cloud aquí](https://proyectofinalinteligenciaartificial.streamlit.app/)**
-*(Nota: Una vez desplegada la aplicación en Streamlit Community Cloud usando tu cuenta de GitHub, puedes actualizar esta URL con la dirección pública final).*
+🔗 **[Visita la aplicación web funcional en Streamlit Cloud](https://proyectofinalinteligenciaartificial.streamlit.app/)**  
+💻 **[Repositorio en GitHub](https://github.com/Candresh9/Proyecto_Final_Inteligencia_Artificial)**
+
 
 Este repositorio contiene el Proyecto Final de la asignatura de Inteligencia Artificial desarrollado por **Camilo Hernandez, Fernando Vega y Jesus Jimenez**.
 
