@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import plotly.graph_objects as go
 
 # ============================================================================
 # CONFIGURACIÓN DE PÁGINA Y ESTILOS
@@ -382,6 +383,21 @@ with tab_sim:
             
         st.info("💡 **Consejo:** Modifica la tabla para simular distribuciones específicas, luego haz clic en '⚡ Entrenar Modelo'.")
         
+        st.write("---")
+        st.subheader("➕ Añadir Punto Rápido")
+        with st.form("add_point_form", clear_on_submit=True):
+            new_x = st.slider("Coordenada X:", 0.0, 1.0, 0.5, 0.01)
+            new_y = st.slider("Coordenada Y:", 0.0, 1.0, 0.5, 0.01)
+            new_class = st.selectbox("Clase/Etiqueta:", [0, 1])
+            submitted = st.form_submit_button("Añadir Punto", use_container_width=True)
+            if submitted:
+                new_row = pd.DataFrame([{"X": new_x, "Y": new_y, "Clase": new_class}])
+                st.session_state.df = pd.concat([df, new_row], ignore_index=True)
+                st.session_state.trained = False
+                st.session_state.history = []
+                st.toast(f"Punto ({new_x:.2f}, {new_y:.2f}) de Clase {new_class} añadido.")
+                st.rerun()
+
         # Ejecutar entrenamiento rápido OLS/GD
         if st.button("⚡ Entrenar Modelo", type="primary", width="stretch"):
             if len(df) < 2:
@@ -420,90 +436,140 @@ with tab_sim:
     with col_main:
         st.subheader("📈 Visualización del Plano Cartesiano")
         
-        # Graficador Matplotlib principal
-        fig, ax = plt.subplots(figsize=(8, 6), facecolor="#090d16")
-        ax.set_facecolor("#090d16")
-        
-        # Obtener coeficientes actuales
-        m_curr = st.session_state.model_m
-        b_curr = st.session_state.model_b
+        # Graficador interactivo de Plotly
+        fig = go.Figure()
         
         # 1. Regiones de decisión
+        shapes = []
         if show_regions and len(df) > 0:
             if abs(m_curr) < 0.0001:
-                # Si la pendiente es casi cero, toda la región es una sola clase
                 bg_color = COLOR_CLASS_1 if b_curr >= threshold else COLOR_CLASS_0
-                ax.axhspan(0, 1, color=bg_color, alpha=0.06)
+                shapes.append(dict(
+                    type="rect", x0=0, y0=0, x1=1, y1=1,
+                    fillcolor=bg_color, opacity=0.06, layer="below", line_width=0
+                ))
             else:
-                # Calcular el valor límite x_front donde m*x + b = threshold -> x = (threshold - b) / m
                 x_front = (threshold - b_curr) / m_curr
-                
                 if m_curr > 0:
-                    if x_front <= 0:
-                        ax.axvspan(0, 1, color=COLOR_CLASS_1, alpha=0.06)
-                    elif x_front >= 1:
-                        ax.axvspan(0, 1, color=COLOR_CLASS_0, alpha=0.06)
-                    else:
-                        ax.axvspan(0, x_front, color=COLOR_CLASS_0, alpha=0.06)
-                        ax.axvspan(x_front, 1, color=COLOR_CLASS_1, alpha=0.06)
+                    x0_c0, x1_c0 = 0, max(0.0, min(1.0, x_front))
+                    x0_c1, x1_c1 = max(0.0, min(1.0, x_front)), 1
+                    if x1_c0 > 0:
+                        shapes.append(dict(
+                            type="rect", x0=x0_c0, y0=0, x1=x1_c0, y1=1,
+                            fillcolor=COLOR_CLASS_0, opacity=0.06, layer="below", line_width=0
+                        ))
+                    if x1_c1 > x0_c1 or x0_c1 < 1:
+                        shapes.append(dict(
+                            type="rect", x0=x0_c1, y0=0, x1=x1_c1, y1=1,
+                            fillcolor=COLOR_CLASS_1, opacity=0.06, layer="below", line_width=0
+                        ))
                 else:
-                    if x_front <= 0:
-                        ax.axvspan(0, 1, color=COLOR_CLASS_0, alpha=0.06)
-                    elif x_front >= 1:
-                        ax.axvspan(0, 1, color=COLOR_CLASS_1, alpha=0.06)
-                    else:
-                        ax.axvspan(0, x_front, color=COLOR_CLASS_1, alpha=0.06)
-                        ax.axvspan(x_front, 1, color=COLOR_CLASS_0, alpha=0.06)
+                    x0_c1, x1_c1 = 0, max(0.0, min(1.0, x_front))
+                    x0_c0, x1_c0 = max(0.0, min(1.0, x_front)), 1
+                    if x1_c1 > 0:
+                        shapes.append(dict(
+                            type="rect", x0=x0_c1, y0=0, x1=x1_c1, y1=1,
+                            fillcolor=COLOR_CLASS_1, opacity=0.06, layer="below", line_width=0
+                        ))
+                    if x1_c0 > x0_c0 or x0_c0 < 1:
+                        shapes.append(dict(
+                            type="rect", x0=x0_c0, y0=0, x1=x1_c0, y1=1,
+                            fillcolor=COLOR_CLASS_0, opacity=0.06, layer="below", line_width=0
+                        ))
                         
-        # 2. Cuadrícula
-        if show_grid:
-            ax.grid(True, color="#ffffff0d", linestyle="--", linewidth=0.5)
-            
-        # 3. Dibujar línea de regresión continua y residuales
+        # 2. Dibujar línea de regresión continua
         x_vals = np.linspace(0, 1, 100)
         y_vals = m_curr * x_vals + b_curr
-        ax.plot(x_vals, y_vals, color="#fbbf24", linewidth=2.5, label="Regresión Lineal ($y = mx + b$)")
+        fig.add_trace(go.Scatter(
+            x=x_vals, y=y_vals,
+            mode="lines",
+            line=dict(color="#fbbf24", width=3),
+            name="Regresión Lineal (y = mx + b)",
+            hoverinfo="skip"
+        ))
         
-        # 4. Frontera de decisión
+        # 3. Frontera de decisión
         if abs(m_curr) >= 0.0001:
             x_front = (threshold - b_curr) / m_curr
             if 0 <= x_front <= 1:
-                ax.axvline(x=x_front, color="#ffffff", linestyle="--", alpha=0.7, linewidth=1.8, label=f"Frontera (x={x_front:.2f})")
+                fig.add_trace(go.Scatter(
+                    x=[x_front, x_front], y=[0, 1],
+                    mode="lines",
+                    line=dict(color="#ffffff", width=2, dash="dash"),
+                    name=f"Frontera (x={x_front:.2f})",
+                    hoverinfo="skip"
+                ))
                 
-        # 5. Puntos y residuales
+        # 4. Puntos y residuales
         if len(df) > 0:
-            # Ensure numeric types for X and Y
             df["X"] = pd.to_numeric(df["X"], errors="coerce")
             df["Y"] = pd.to_numeric(df["Y"], errors="coerce")
-            df = df.dropna(subset=["X", "Y"]).reset_index(drop=True)
-            df0 = df[df["Clase"] == 0]
-            df1 = df[df["Clase"] == 1]
+            df_clean = df.dropna(subset=["X", "Y"]).reset_index(drop=True)
 
             # Dibujar residuales primero para que queden de fondo
             if show_residuals:
-                for _, row in df.iterrows():
+                for _, row in df_clean.iterrows():
                     try:
                         pred_y = float(m_curr) * float(row["X"]) + float(b_curr)
-                        ax.plot([row["X"], row["X"]], [row["Y"], pred_y], color="#ffffff4d", linestyle=":", linewidth=1.2)
+                        fig.add_trace(go.Scatter(
+                            x=[row["X"], row["X"]], y=[row["Y"], pred_y],
+                            mode="lines",
+                            line=dict(color="rgba(255, 255, 255, 0.3)", width=1, dash="dot"),
+                            showlegend=False,
+                            hoverinfo="skip"
+                        ))
                     except Exception:
                         continue
             
-            # Dibujar puntos
-            ax.scatter(df0["X"], df0["Y"], color=COLOR_CLASS_0, s=120, edgecolors="white", linewidth=1.5, zorder=5, label="Clase 0 (Y=0)")
-            ax.scatter(df1["X"], df1["Y"], color=COLOR_CLASS_1, s=120, edgecolors="white", linewidth=1.5, zorder=5, label="Clase 1 (Y=1)")
-
-        # Configuración estética del plot
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-        ax.set_xlabel("Variable de Entrada (X)", color="white", fontsize=11, fontweight="bold")
-        ax.set_ylabel("Salida Continua / Clase (Y)", color="white", fontsize=11, fontweight="bold")
-        ax.tick_params(colors="white")
-        for spine in ax.spines.values():
-            spine.set_color("#ffffff33")
+            df0 = df_clean[df_clean["Clase"] == 0]
+            df1 = df_clean[df_clean["Clase"] == 1]
             
-        # Título y leyenda
-        ax.legend(facecolor="#090d16", edgecolor="#ffffff1a", labelcolor="white")
-        st.pyplot(fig)
+            if len(df0) > 0:
+                fig.add_trace(go.Scatter(
+                    x=df0["X"], y=df0["Y"],
+                    mode="markers",
+                    marker=dict(color=COLOR_CLASS_0, size=12, line=dict(color="white", width=1.5)),
+                    name="Clase 0 (Y=0)",
+                    customdata=np.stack((df0["X"], df0["Y"]), axis=-1),
+                    hovertemplate="<b>Clase 0</b><br>X: %{customdata[0]:.2f}<br>Y: %{customdata[1]:.2f}<extra></extra>"
+                ))
+            if len(df1) > 0:
+                fig.add_trace(go.Scatter(
+                    x=df1["X"], y=df1["Y"],
+                    mode="markers",
+                    marker=dict(color=COLOR_CLASS_1, size=12, line=dict(color="white", width=1.5)),
+                    name="Clase 1 (Y=1)",
+                    customdata=np.stack((df1["X"], df1["Y"]), axis=-1),
+                    hovertemplate="<b>Clase 1</b><br>X: %{customdata[0]:.2f}<br>Y: %{customdata[1]:.2f}<extra></extra>"
+                ))
+
+        fig.update_layout(
+            plot_bgcolor="#090d16",
+            paper_bgcolor="#090d16",
+            font=dict(color="white"),
+            xaxis=dict(
+                title="Variable de Entrada (X)",
+                range=[0, 1],
+                gridcolor="rgba(255, 255, 255, 0.05)",
+                zerolinecolor="rgba(255, 255, 255, 0.1)",
+                showgrid=show_grid
+            ),
+            yaxis=dict(
+                title="Salida Continua / Clase (Y)",
+                range=[0, 1],
+                gridcolor="rgba(255, 255, 255, 0.05)",
+                zerolinecolor="rgba(255, 255, 255, 0.1)",
+                showgrid=show_grid
+            ),
+            margin=dict(l=40, r=40, t=40, b=40),
+            shapes=shapes,
+            legend=dict(
+                bgcolor="rgba(9, 13, 22, 0.8)",
+                bordercolor="rgba(255, 255, 255, 0.1)",
+                borderwidth=1
+            )
+        )
+        st.plotly_chart(fig, use_container_width=True)
         
         # Ecuación matemática
         st.latex(rf"Ec.\ del\ modelo:\ \hat{{y}} = {m_curr:.3f}x + {b_curr:.3f}")
@@ -575,58 +641,121 @@ with tab_train:
                 # Dibujar plot de animación (actualizar cada 2 épocas para mejorar el rendimiento)
                 if epoch % 2 == 0 or epoch == gd_epochs:
                     # 1. Gráfico del plano
-                    fig_anim, ax_anim = plt.subplots(figsize=(6, 4.5), facecolor="#090d16")
-                    ax_anim.set_facecolor("#090d16")
+                    fig_anim = go.Figure()
                     
+                    shapes_anim = []
                     if show_regions:
-                        # Región
                         if abs(m) >= 0.0001:
                             x_front = (threshold - b) / m
                             if m > 0:
-                                ax_anim.axvspan(0, max(0, min(1, x_front)), color=COLOR_CLASS_0, alpha=0.06)
-                                ax_anim.axvspan(max(0, min(1, x_front)), 1, color=COLOR_CLASS_1, alpha=0.06)
+                                x0_c0, x1_c0 = 0, max(0.0, min(1.0, x_front))
+                                x0_c1, x1_c1 = max(0.0, min(1.0, x_front)), 1
+                                if x1_c0 > 0:
+                                    shapes_anim.append(dict(
+                                        type="rect", x0=x0_c0, y0=0, x1=x1_c0, y1=1,
+                                        fillcolor=COLOR_CLASS_0, opacity=0.06, layer="below", line_width=0
+                                    ))
+                                if x1_c1 > x0_c1 or x0_c1 < 1:
+                                    shapes_anim.append(dict(
+                                        type="rect", x0=x0_c1, y0=0, x1=x1_c1, y1=1,
+                                        fillcolor=COLOR_CLASS_1, opacity=0.06, layer="below", line_width=0
+                                    ))
                             else:
-                                ax_anim.axvspan(0, max(0, min(1, x_front)), color=COLOR_CLASS_1, alpha=0.06)
-                                ax_anim.axvspan(max(0, min(1, x_front)), 1, color=COLOR_CLASS_0, alpha=0.06)
-                                
-                    if show_grid:
-                        ax_anim.grid(True, color="#ffffff0d", linestyle="--", linewidth=0.5)
-                        
+                                x0_c1, x1_c1 = 0, max(0.0, min(1.0, x_front))
+                                x0_c0, x1_c0 = max(0.0, min(1.0, x_front)), 1
+                                if x1_c1 > 0:
+                                    shapes_anim.append(dict(
+                                        type="rect", x0=x0_c1, y0=0, x1=x1_c1, y1=1,
+                                        fillcolor=COLOR_CLASS_1, opacity=0.06, layer="below", line_width=0
+                                    ))
+                                if x1_c0 > x0_c0 or x0_c0 < 1:
+                                    shapes_anim.append(dict(
+                                        type="rect", x0=x0_c0, y0=0, x1=x1_c0, y1=1,
+                                        fillcolor=COLOR_CLASS_0, opacity=0.06, layer="below", line_width=0
+                                    ))
+                                    
                     x_line = np.linspace(0, 1, 10)
                     y_line = m * x_line + b
-                    ax_anim.plot(x_line, y_line, color="#fbbf24", linewidth=2, label=f"Época {epoch}")
+                    fig_anim.add_trace(go.Scatter(
+                        x=x_line, y=y_line,
+                        mode="lines",
+                        line=dict(color="#fbbf24", width=3),
+                        name=f"Época {epoch}",
+                        hoverinfo="skip"
+                    ))
                     
-                    # Puntos
                     df0 = df[df["Clase"] == 0]
                     df1 = df[df["Clase"] == 1]
-                    ax_anim.scatter(df0["X"], df0["Y"], color=COLOR_CLASS_0, s=80, edgecolors="white", linewidth=1.2, zorder=5)
-                    ax_anim.scatter(df1["X"], df1["Y"], color=COLOR_CLASS_1, s=80, edgecolors="white", linewidth=1.2, zorder=5)
+                    if len(df0) > 0:
+                        fig_anim.add_trace(go.Scatter(
+                            x=df0["X"], y=df0["Y"],
+                            mode="markers",
+                            marker=dict(color=COLOR_CLASS_0, size=10, line=dict(color="white", width=1)),
+                            name="Clase 0",
+                            showlegend=False,
+                            hoverinfo="skip"
+                        ))
+                    if len(df1) > 0:
+                        fig_anim.add_trace(go.Scatter(
+                            x=df1["X"], y=df1["Y"],
+                            mode="markers",
+                            marker=dict(color=COLOR_CLASS_1, size=10, line=dict(color="white", width=1)),
+                            name="Clase 1",
+                            showlegend=False,
+                            hoverinfo="skip"
+                        ))
                     
-                    ax_anim.set_xlim(0, 1)
-                    ax_anim.set_ylim(0, 1)
-                    ax_anim.tick_params(colors="white")
-                    for spine in ax_anim.spines.values():
-                        spine.set_color("#ffffff33")
-                    ax_anim.legend(facecolor="#090d16", labelcolor="white")
-                    
-                    plot_anim_placeholder.pyplot(fig_anim)
-                    plt.close(fig_anim)
+                    fig_anim.update_layout(
+                        plot_bgcolor="#090d16",
+                        paper_bgcolor="#090d16",
+                        font=dict(color="white", size=9),
+                        xaxis=dict(
+                            range=[0, 1],
+                            gridcolor="rgba(255, 255, 255, 0.05)",
+                            zerolinecolor="rgba(255, 255, 255, 0.1)",
+                            showgrid=show_grid
+                        ),
+                        yaxis=dict(
+                            range=[0, 1],
+                            gridcolor="rgba(255, 255, 255, 0.05)",
+                            zerolinecolor="rgba(255, 255, 255, 0.1)",
+                            showgrid=show_grid
+                        ),
+                        margin=dict(l=20, r=20, t=20, b=20),
+                        shapes=shapes_anim,
+                        height=350
+                    )
+                    plot_anim_placeholder.plotly_chart(fig_anim, use_container_width=True)
                     
                     # 2. Gráfico de curva de pérdida
-                    fig_loss, ax_loss = plt.subplots(figsize=(6, 2.5), facecolor="#090d16")
-                    ax_loss.set_facecolor("#090d16")
-                    ax_loss.plot(epochs_list, mse_history, color="#60a5fa", linewidth=1.8)
-                    ax_loss.set_xlim(0, gd_epochs)
-                    ax_loss.set_xlabel("Épocas", color="white", fontsize=8)
-                    ax_loss.set_ylabel("Costo (MSE)", color="white", fontsize=8)
-                    ax_loss.tick_params(colors="white", labelsize=8)
-                    for spine in ax_loss.spines.values():
-                        spine.set_color("#ffffff33")
-                    if show_grid:
-                        ax_loss.grid(True, color="#ffffff0d", linestyle="--")
-                    
-                    loss_curve_placeholder.pyplot(fig_loss)
-                    plt.close(fig_loss)
+                    fig_loss = go.Figure()
+                    fig_loss.add_trace(go.Scatter(
+                        x=epochs_list, y=mse_history,
+                        mode="lines",
+                        line=dict(color="#60a5fa", width=2.5),
+                        name="Costo (MSE)"
+                    ))
+                    fig_loss.update_layout(
+                        plot_bgcolor="#090d16",
+                        paper_bgcolor="#090d16",
+                        font=dict(color="white", size=8),
+                        xaxis=dict(
+                            title="Épocas",
+                            range=[0, gd_epochs],
+                            gridcolor="rgba(255, 255, 255, 0.05)",
+                            zerolinecolor="rgba(255, 255, 255, 0.1)",
+                            showgrid=show_grid
+                        ),
+                        yaxis=dict(
+                            title="Costo (MSE)",
+                            gridcolor="rgba(255, 255, 255, 0.05)",
+                            zerolinecolor="rgba(255, 255, 255, 0.1)",
+                            showgrid=show_grid
+                        ),
+                        margin=dict(l=20, r=20, t=20, b=20),
+                        height=200
+                    )
+                    loss_curve_placeholder.plotly_chart(fig_loss, use_container_width=True)
                     
                     time.sleep(0.02)
             
